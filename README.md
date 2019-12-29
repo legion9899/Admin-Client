@@ -1,68 +1,98 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 项目开发准备
 
-## Available Scripts
+1. 描述项目
+2. 技术选型
+3. API 接口 / 接口文档 / 测试接口
 
-In the project directory, you can run:
+## 启动项目开发
 
-### `npm start`
+1. 使用 React 脚手架创建项目
+2. 开发环境运行：`npm start`
+3. 生产环境打包运行：`npm run build`
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Git 管理项目
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+### 1. 创建远程仓库
+### 2. 创建本地仓库
 
-### `npm test`
+- 配置 `.gitignore`
+- `git init`
+- `git add`
+- `git commit -m "init"`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 3. 将本地仓库推送到远程仓库
 
-### `npm run build`
+- `git remote add origin url`
+- `git push origin master`
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 4. 在本地创建 `dev` 分支，并推送到远程
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+- `git checkout -b dev`
+- `git push origin dev`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 5. 如果本地有修改
 
-### `npm run eject`
+- `git add .`
+- `git commit -m "xxx"`
+- `git push origin dev`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 6. 新的同事：克隆仓库
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- `git clone url`
+- `git checkout -b dev origin/dev`
+- `git pull origin dev`
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### 7. 如果远程修改了
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- `git pull origin dev`
 
-## Learn More
+### 8. 如果得到后面新增的远程分支
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- `git pull`
+- `git checkout -b dev origin/xxx`
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 创建项目的基本结构
 
-### Code Splitting
+- `api`：ajax 请求的模块
+- `components`：非路由组件
+- `pages`：路由组件
+- `App.js`：应用的根组件
+- `index.js`：入口文件
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+## 引入 antd
 
-### Analyzing the Bundle Size
+- 下载 antd 的包
+- 按需打包：只打包 `import` 引入组件的 `js` / `css`
+  + 下载工具包
+  + `config-overrides.js`
+  + `package.json`
+- 自定义主题
+  + 下载工具包
+  + `config-overrides.js`
+- 使用 antd 的组件
+  + 根据 antd 的文档编写
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+## 引入路由
 
-### Making a Progressive Web App
+- 下载包：`react-router-dom`
+- 拆分应用路由：
+  + `Login`：登录
+  + `Admin`：后台管理界面
+- 注册路由：
+  + `<BrowserRouter>` / `<HashRouter>`
+  + `<Switch>`
+  + `<Route path="/xxx" component={ xxx } />`
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+## Login 的静态组件
 
-### Advanced Configuration
+1. 自定义了一部分样式布局
+2. 使用 antd 的组件实现登录表单界面
+  + `Form` / `Form.Item`
+  + `Input`
+  + `Icon`
+  + `Button`
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+## 相关知识点
 
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+1. 区别开发环境运行和生产环境打包运行
+2. 路由的理解
