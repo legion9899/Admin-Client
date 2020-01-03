@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, message } from 'antd';
+import { message } from 'antd';
 import { HashRouter, Switch, Route } from 'react-router-dom'
 import Login from './pages/login/login'
 import Admin from './pages/admin/admin'
@@ -15,6 +15,7 @@ class App extends Component {
       <HashRouter>
         {/* <Button type="primary" onClick={ this.handleClick }>学习</Button> */}
         <Switch>
+          {/* /home */}
           <Route path="/login" component={ Login } />
           <Route path="/" component={ Admin } />
         </Switch>

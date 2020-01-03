@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
-import { Form, Icon, Input, Button } from 'antd'
-import logo from './images/logo.jpg'
+import { Redirect } from 'react-router-dom'
+import { Form, Icon, Input, Button, message } from 'antd'
+import memoryUtils from "../../utils/memoryUtils"
+import storageUtils from '../../utils/storageUtils'
+// 分别暴露必须使用大括号
+import { reqLogin } from '../../api/index' // 接口请求函数
+import logo from '../../assets/images/logo.png'
 import './login.less'
 
 const Item = Form.Item
@@ -19,11 +24,29 @@ class Login extends Component {
     // console.log(values, username, password)
 
     // 对表单所有字段进行统一的验证
-    this.props.form.validateFields((err, { username, password }) => {
+    this.props.form.validateFields(async (err, { username, password }) => {
       if (!err) {
-        alert(`发送登录的 ajax 请求，username=${ username }，password=${ password }`)
+        // .then 中需要用：try {} catch (error) {} 来捕获错误
+        const result = await reqLogin(username, password)
+        // console.log(result)
+        // 判断状态码 status
+        if (result.status === 0) {
+          // 验证成功后，将 user 信息保存到 local 中
+          const user = result.data
+          // localStorage.setItem('user_key', JSON.stringify(user))
+
+          // 在 localStorage 中保存的同时，要在本地也要保存一份
+          storageUtils.saveUser(user)
+          memoryUtils.user = user
+
+          // 跳转到管理页面
+          this.props.history.replace('/')
+          message.success('登陆成功')
+        } else {
+          message.error(result.msg)
+        }
       } else {
-        // alert('验证失败')
+        message.error('用户输入有误，请重试')
       }
     })
   }
@@ -48,12 +71,24 @@ class Login extends Component {
     }
   }
   render() {
+    // 读取保存的 user 信息，如果不存在，直接跳转到管理界面
+    // const user = JSON.parse(localStorage.getItem('user_key') || '{}')
+    const user = memoryUtils.user
+    // console.log(user)
+    if (user._id) {
+      // 在（点击）事件回调函数中使用 `this.props.history.replace('/login')` 进行路由跳转
+
+      // 在 render 函数中使用 Redirect 进行重定向
+      // 跳转到指定的路由路径
+      return <Redirect to="/" />
+    }
+
     const { getFieldDecorator } = this.props.form
     return (
       <div className="login">
         <div className="login-header">
           <img src={ logo } alt="logo"/>
-          <h1>React项目：后台管理系统</h1>
+          <h1>大清帝国禁卫军管理系统</h1>
         </div>
         <div className="login-content">
           <h1>用户登录</h1>
@@ -61,13 +96,10 @@ class Login extends Component {
             <Item>
               {/* 高阶函数 */}
               {getFieldDecorator('username', { // 配置对象：属性名是一些特定的名称
-                /* 
-                  用户名/密码的合法性要求：
-                    + 必须输入
-                    + 必须大于等于 4 位
-                    + 必须小于等于 12 位
-                    + 必须是英文、数字或下划线组成
-                */
+                // 必须输入
+                // 必须大于等于 4 位
+                // 必须小于等于 12 位
+                // 必须是英文、数字或下划线组成
                 initialValue: '', // 初始值
                 rules: [ // 声明式验证：使用插件已定义好的规则进行验证
                   { required: true, whitespace: true, message: '请输入你的用户名' },
@@ -79,6 +111,7 @@ class Login extends Component {
                 <Input
                   prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                   placeholder="用户名"
+                  autoComplete="username"
                 />
               )}
             </Item>
@@ -94,6 +127,7 @@ class Login extends Component {
                   prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                   type="password"
                   placeholder="密码"
+                  autoComplete="current-password"
                 />
               )}
             </Item>
