@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { message } from 'antd';
-import { HashRouter, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Login from './pages/login/login'
 import Admin from './pages/admin/admin'
 
@@ -12,14 +12,14 @@ class App extends Component {
   }
   render() {
     return (
-      <HashRouter>
-        {/* <Button type="primary" onClick={ this.handleClick }>学习</Button> */}
+      // 换成 BrowserRouter 是为了在详情页得到从商品主页中 history.push 传递 state 属性
+      <BrowserRouter>
         <Switch>
           {/* /home */}
           <Route path="/login" component={ Login } />
           <Route path="/" component={ Admin } />
         </Switch>
-      </HashRouter>
+      </BrowserRouter>
     )
   }
 }

@@ -1,4 +1,4 @@
-## 项目开发准备
+l## 项目开发准备
 
 1. 描述项目
 2. 技术选型
@@ -272,3 +272,165 @@ const xxx = await test()
 - `memoryUtils.js`
   + 用来在内存中保存数据(user)的工具类
   + `user` 的初始值从 `local` 中读取
+
+## LeftNav 组件
+
+- 使用 `antd` 的组件
+  + `Menu` / `Menu.Item` / `Menu.SubMenu`
+
+- 使用 `react-router`
+  + `withRouter()`: 包装非路由组件, 给其传入 `history` / `location` / `match` 属性
+  + history: `push()` / `replace()` / `goBack()`
+  + location: `pathname` 属性
+  + match: `params` 属性
+
+- `componentWillMount` 与 `componentDidMount` 的比较
+  + **componentWillMount**: 在第一次 `render()` 前调用一次, 为第一次 `render()` 准备数据(同步)
+  + **componentDidMount**: 在第一次 `render()` 之后调用一次, 启动异步任务, 后面异步更新状态重新 `render`
+
+- 根据配置数据动态生成 `Item` 和 `SubMenu` 的数组
+  + `map()` + 递归: 多级菜单列表
+  + `reduce()` + 递归: 多级菜单列表
+
+- 两个问题?
+  + 刷新时如何选中对应的菜单项？
+    * `selectedKey` 是当前请求的 `path`
+  + 刷新子菜单路径时, 自动打开子菜单列表?
+    * `openKey` 是一级列表项的某个子菜单项是当前对应的菜单项
+
+## Header组件
+
+- 界面静态布局
+  + 三角形效果
+- 获取登陆用户的名称显示
+  + `MemoryUtils`
+- 当前时间
+  + 循环定时器, 每隔 1s 更新当前时间状态
+  + 格式化指定时间: `dateUtils`
+- 天气预报
+  + 使用 `jsonp` 库发 `jsonp` 请求百度天气预报接口
+  + 对 `jsonp` 请求的理解
+- 当前导航项的标题
+  + 得到当前请求的路由 `path: withRouter()` 包装非路由组件
+  + 根据 `path` 在 `menuList` 中遍历查找对应的 `item` 的 `title`
+- 退出登陆
+  + `Modal` 组件显示提示
+  + 清除保存的 `user`
+  + 跳转到 `login`
+- 抽取通用的类链接按钮组件
+  + 通过 `...` 透传所有接收的属性: <Button {...props} />    <LinkButton>xxxx</LinkButton>
+  + 组件标签的所有子节点都会成为组件的 `children` 属性
+        
+## `jsonp` 解决 `ajax` 跨域的原理
+
+- jsonp 只能解决 GET 类型的 ajax 请求跨域问题
+- jsonp 请求不是 ajax 请求, 而是一般的 GET 请求
+- 基本原理
+  + 浏览器端:
+    * 动态生成 `<script>` 来请求后台接口(src就是接口的url)
+    * 定义好用于接收响应数据的函数(fn), 并将函数名通过请求参数提交给后台(如: callback=fn)
+  + 服务器端:
+    * 接收到请求处理产生结果数据后, 返回一个函数调用的js代码, 并将结果数据作为实参传入函数调用
+  + 浏览器端:
+    * 收到响应自动执行函数调用的js代码, 也就执行了提前定义好的回调函数, 并得到了需要的结果数据
+
+## Category组件使用antd组件构建分类列表界面
+
+- Card
+- Table
+- Button
+- Icon
+        
+## 相关接口请求函数
+
+- 获取分类列表
+- 添加分类
+- 更新分类
+        
+## 异步显示分类列表    
+
+- 设计分类列表的状态: categorys
+- 异步获取分类列表: componentDidMount(){}
+- 更新状态显示
+
+## 添加分类
+
+- 界面
+  + antd组件: Modal, Form, Select, Input
+  + 显示/隐藏: showStatus状态为 1/0
+- 功能
+  + 父组(Category)件得到子组件(CategoryForm)的数据(form)
+  + 调用添加分类的接口
+  + 重新获取分类列表
+
+## 更新分类
+
+- 界面
+  + antd组件: Modal, Form, Input
+  + 显示/隐藏: showStatus状态为 2/0
+- 功能
+  + 父组(Category)件得到子组件(CategoryForm)的数据(form)
+  + 调用更新分类的接口
+  + 重新获取分类列表
+- 重要问题
+  + 描述: <Input>指定initialValue后, 如果输入改变了, 再指定新的initialValue, 默认显示输入的值
+  + 解决: 在关闭Modal时, 进行表单项重置: form.resetFields()
+
+## Product 整体路由
+
+- 配置子路由: 
+  + ProductHome / ProductDetail / ProductAddUpdate
+  + <Route> / <Switch> / <Redirect>
+- 匹配路由的逻辑:
+  + 默认: 逐层路由不完全匹配 `<Route path='/product' component={ProductHome}/>`
+  + exact属性: 完全匹配
+        
+## 分页实现技术(2种)
+
+- 前台分页
+  + 请求获取数据: 一次获取所有数据, 翻页时不需要再发请求
+  + 请求接口: 
+    * 不需要指定请求参数: 页码(pageNum)和每页数量(pageSize)
+    * 响应数据: 所有数据的数组
+- 基于后台的分页
+  + 请求获取数据: 每次只获取当前页的数据, 翻页时要发请求
+  + 请求接口: 
+    * 需要指定请求参数: 页码(pageNum)和每页数量(pageSize)
+    * 响应数据: 当前页数据的数组 + 总记录数(total)
+- 如何选择?
+  + 基本根据数据多少来选择
+
+## ProductHome组件
+
+- 分页显示
+  + 界面: <Card> / <Table> / Select / Icon / Input / Button
+  + 状态: products / total
+  + 接口请求函数需要的数据: pageNum, pageSize
+  + 异步获取第一页数据显示
+    * 调用分页的接口请求函数, 获取到当前页的 products 和总记录数 total
+    * 更新状态: products / total
+  + 翻页:
+    * 绑定翻页的监听, 监听回调需要得到 pageNum
+    * 异步获取指定页码的数据显示  
+
+## Array的声明式方法的实现
+
+- map()
+- reduce()
+- filter()
+- find() / findIndex()
+- every() / some()
+
+## 受控组件与非受控组件
+
+- 有 `form` 表单项的组件
+
+### 受控组件
+
+- 自动收集数据，并且收集到状态里面
+
+#### 设置好状态
+
+#### 读取初始值进行显示，同时绑定 onChange 监听
+
+#### 非受控组件

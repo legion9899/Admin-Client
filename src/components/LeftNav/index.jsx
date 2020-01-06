@@ -123,7 +123,8 @@ class LeftNav extends Component {
       <div className="left-nav">
         <Link className="left-nav-header" to="/home">
           <img src={ logo } alt="logo"/>
-          <h1>大清禁卫</h1>
+          {/* <h1>大清禁卫</h1> */}
+          <h1>Admin-Client</h1>
         </Link>
         {/*
           defaultSelectedKeys：总是根据第一次指定的 key 进行显示
