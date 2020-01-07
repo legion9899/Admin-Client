@@ -46,7 +46,12 @@ class Header extends Component {
       if (item.key === path) {
         title = item.title
       } else if (item.children) {
-        const cItem =  item.children.find(cItem => cItem.key === path)
+        /*
+          bug：解决头部标题在二级界面内不显得问题
+            + 只判断一级路径，如果对应上就能出现头部标题
+            + 处理方式和左侧导航栏一样：path.indexOf(cItem.key) === 0
+        */
+        const cItem =  item.children.find(cItem => path.indexOf(cItem.key) === 0)
         if (cItem) {
           title = cItem.title
         }

@@ -80,3 +80,6 @@ export const reqUpdateStatus = (productId, status) => axios('/manage/product/upd
     status
   },
 })
+
+// 删除上传的商品图片文件
+export const reqDeleteImg = (name) => axios.post('/manage/img/delete', { name })

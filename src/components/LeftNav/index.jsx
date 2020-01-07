@@ -44,7 +44,7 @@ class LeftNav extends Component {
             + 看是否有一个跟请求的 path 匹配
         */
 
-        const cItem = item.children.find(cItem => cItem.key === path)
+        const cItem = item.children.find(cItem => path.indexOf(cItem.key) === 0)
 
         if (cItem) {
           // debugger
@@ -115,7 +115,16 @@ class LeftNav extends Component {
     // 得到当前请求的路由路径
     
     // 非路由组件没有路由对象，所以要用 withRouter 处理抛出的组件
-    const selectKey = this.props.location.pathname
+    let selectKey = this.props.location.pathname
+
+    /**
+     * bug：解决左侧导航栏弹出二级页面时选中失效的问题
+     *  + 监控 /product 的路由匹配，进入二级路由时让 selectKey 等于一级路径
+     */
+    if (selectKey.indexOf('/product') === 0) {
+      selectKey = '/product'
+    }
+
     console.log('selectKey', selectKey)
     console.log('openKey', this.openKey)
 

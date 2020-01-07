@@ -1,4 +1,4 @@
-l## 项目开发准备
+## 项目开发准备
 
 1. 描述项目
 2. 技术选型
@@ -434,3 +434,95 @@ const xxx = await test()
 #### 读取初始值进行显示，同时绑定 onChange 监听
 
 #### 非受控组件
+
+## ProductHome 组件
+
+### 1. 搜索分页
+
+- 接口请求函数需要的数据
+  + pageSize：每页的条目数
+  + pageNum：当前请求第几页（从1开始）
+  + productDesc / productName：searchName 根据商品描述 / 名称搜索
+- 状态：
+  + searchType / searchName / 在用户操作的时候实时搜索数据
+- 异步搜索显示分页列表
+  + 如果 searchName 有值，调用搜索的接口请求函数获取数据并更新状态
+
+### 2. 更新商品的状态
+
+- 初始显示：
+  + 根据 product 的 status 属性来显示  status = 1/2
+- 点击切换：
+  + 绑定点击监听
+  + 异步请求更新状态
+
+### 4. 进入详情界面
+
+- memoryUtils.product = product
+- history.push('/product/detail')
+
+### 5. 进入添加界面
+
+- memoryUtils.product = null
+- history.push('/product/addupdate')
+
+### 6. 进入修改界面
+
+- memoryUtils.product = product
+- history.push('/product/addupdate')
+
+## ProductDetail 组件
+
+1. 读取商品数据: memoryUtils.product
+2. 显示商品信息: <Card> / List 
+3. 异步显示商品所属分类的名称
+
+## ProductAddUpdate 组件
+
+### 1. 基本界面
+
+- Card / Form / Input / TextArea / Button
+- FormItem 的 label 标题和 layout
+
+### 2. 分类下拉列表的异步显示
+
+- **以下为基本套路**
+- 初始状态的变量放在 state 状态内
+- 在 render 内读取初始状态，不会显示列表
+- 在 DidMount 中进行
+  + 调用接口函数、得到数据、更新初始状态
+  + 从而更新显示页面的数据
+
+### 3. 表单数据收集与表单验证
+
+## PicturesWall 组件
+
+### 1. antd 组件
+
+- Upload / Modal / Icon
+- 根据示例 demo 改造编写
+
+### 2. 上传图片
+
+- 在 <Upload > 上配置接口的 path 和请求参数名
+  + 在标签的属性上进行配置，指定 path 路径和参数名
+  + 至于详情配置什么去查看相关 API 文档
+- 监视文件状态的改变: 上传中 `uploading` / 上传完成 `done` / 删除 `removed`
+  + 在 `status` 保存的上传状态
+  + 当它改变的时候的监听回调
+    * `onChange`:`this.handleChange`
+- 在上传成功时, 保存好相关信息: name / url
+  + 上传新文件成功的时候，有两个东西和文件对应
+  + `file` 和 files 里面的最后一个 file
+  + 这两个对象都和我们上传的文件对应，但不是同一个
+- 为父组件提供获取已上传图片文件名数组的方法
+
+### 3. 删除图片
+
+- 当文件状态变为删除时, 调用删除图片的接口删除上传到后台的图片
+
+### 4. 父组件调用子组件对象的方法: 使用 ref 技术
+
+- 创建 ref 容器: `this.pw = React.createRef()`
+- 将 ref 容器交给需要获取的标签元素: <PicturesWall ref={this.pw} />  // 自动将将标签对象添加为pw对象的current属性
+- 通过 ref 容器读取标签元素: this.pw.current
