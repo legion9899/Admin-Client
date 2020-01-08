@@ -14,6 +14,37 @@
       3. 自定义实现 bind()
     */
 
+    /* 自定义实现 call() */
+    // obj 也可以命名为 context 上下文对象
+    Function.prototype.call = function (obj) {
+      // const args = [...arguments].filter((item, index) => index > 0) // 得到所有需要传递的参数的数组
+      var obj = obj || window
+
+      // 函数中的 arguments 可以获取到所有的参数集合
+      const args = [...arguments].splice(1) // 得到所有需要传递的参数的数组
+
+      obj.tempFn = this // 将当前函数（调用 call 的函数）保存到 obj 对象上（临时的）
+
+      let res = obj.tempFn(...args) // 方法（当前函数）执行，内部的 this 是 obj
+      delete obj.tempFn // 临时保存的属性，用完要删掉
+      
+      return res
+    }
+
+    /* 自定义实现 apply() */
+    // obj 也可以命名为 context 上下文对象
+    Function.prototype.apply = function (obj, args) {
+      var obj = obj || window
+
+      obj.tempFn = this // 将当前函数（调用 call 的函数）保存到 obj 对象上（临时的）
+
+      let res = obj.tempFn(...args) // 方法（当前函数）执行，内部的 this 是 obj
+      delete obj.tempFn // 临时保存的属性，用完要删掉
+
+      return res
+    }
+
+    /* 自定义实现 bind() */
     Function.prototype.bind = function (obj) {
       const args = []
       // arguments：调用 bind 函数时传递的实参伪数组
@@ -34,16 +65,10 @@
           console.log(args)
         }
 
-        // 调用原来的函数，并指定 this 指向为 obj
-        // 指定参数为实参 args
+        // 调用原来的函数，并指定 this 指向为 obj，指定参数为实参 args
         self.apply(obj, args)
       }
     }
-
-
-
-    /* ############################################################################# */
-
 
     function fn(a, b) {
       console.log(a, b, this.m)

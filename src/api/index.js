@@ -9,7 +9,10 @@ import { message } from 'antd'
 
 // 请求登录
 // data 是对象，默认使用 json 格式的请求体携带参数数据
-export const reqLogin = (username, password) => axios.post('/login', { username, password })
+export const reqLogin = (username, password) => axios.post('/login', {
+  username,
+  password
+})
 
 // 发送 jsonp 请求得到天气信息
 export const reqWeather = (city) => {
@@ -34,10 +37,21 @@ export const reqWeather = (city) => {
 export const reqCategorys = () => axios.get('/manage/category/list')
 
 // 添加分类
-export const reqAddCategory = (categoryName) => axios.post('/manage/category/add', { categoryName })
+export const reqAddCategory = (categoryName) => axios.post(
+  '/manage/category/add',
+  {
+    categoryName
+  }
+)
 
 // 修改分类
-export const reqUpdateCategory = ({ categoryId, categoryName }) => axios.post('/manage/category/update', { categoryId, categoryName })
+export const reqUpdateCategory = ({ categoryId, categoryName }) => axios.post(
+  '/manage/category/update',
+  {
+    categoryId,
+    categoryName
+  }
+)
 
 // 根据分类 ID 获取分类名称
 export const reqCategory = (categoryId) => axios('/manage/category/info', {
@@ -73,13 +87,45 @@ export const reqSearchProducts = ({
 
 // 对商品进行上架 / 下架处理
 /* axios.post('/manage/product/updateStatus', { productId, status } */
-export const reqUpdateStatus = (productId, status) => axios('/manage/product/updateStatus', {
-  method: 'POST',
-  data: {
-    productId,
-    status
-  },
-})
+export const reqUpdateStatus = (productId, status) => axios(
+  '/manage/product/updateStatus',
+  {
+    method: 'POST',
+    data: {
+      productId,
+      status
+    },
+  }
+)
 
 // 删除上传的商品图片文件
 export const reqDeleteImg = (name) => axios.post('/manage/img/delete', { name })
+
+/* 添加 / 修改商品 */
+export const reqAddUpdateProduct = (product) => axios.post(
+  '/manage/product/' + (product._id ? 'update' : 'add'),
+  product
+)
+
+// 获取角色列表
+export const reqRoles = () => axios.get('/manage/role/list')
+
+// 添加角色
+export const reqAddRole = (roleName) => axios.post('/manage/role/add', { roleName })
+
+// 修改角色
+export const reqUpdateRole = (role) => axios.post('/manage/role/update', role)
+
+// 获取所有用户列表
+export const reqUsers = () => axios.get('/manage/user/list')
+
+// 删除指定用户
+export const reqDeleteUser = (userId) => axios.post('/manage/user/delete', {
+  userId
+})
+
+/* 添加 / 更新用户 */
+export const reqAddOrUpdateUser = (user) => axios.post(
+  '/manage/user/' + (user._id ? 'update' : 'add'),
+  user
+)

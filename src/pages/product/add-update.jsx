@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Card, Icon, Form, Input, Select, Button } from 'antd'
-import { reqCategorys } from '../../api'
+import { Card, Icon, Form, Input, Select, Button, message } from 'antd'
+import { reqCategorys, reqAddUpdateProduct } from '../../api'
 import PicturesWall from './pictures-wall'
 import LinkButton from '../../components/LinkButton'
 import memoryUtils from '../../utils/memoryUtils'
@@ -18,6 +18,7 @@ class ProductAddUpdate extends Component {
     super(props);
     // 创建 ref 容器，并保存到组件对象
     this.pwRef = React.createRef();
+    this.editorRef = React.createRef();
   }
   state = {
     categorys: []
@@ -46,6 +47,27 @@ class ProductAddUpdate extends Component {
         // 收集上传的图片文件名的数组
         const imgs = this.pwRef.current.getImgs()
         console.log('imgs:', imgs)
+
+        // 输入的商品详情的标签字符串
+        const detail = this.editorRef.current.getDetail()
+        console.log('detail:', detail)
+
+        // 封装一个 product 对象
+        const product = { name, desc, price, categoryId, imgs, detail }
+        if (this.isUpdate) {
+          product._id = this.product._id
+        }
+
+        // 发送添加 / 修改的请求
+        const result = await reqAddUpdateProduct(product)
+        if (result.status === 0) {
+          message.success(`${ this.isUpdate ? '修改' : '添加' }商品成功`)
+
+          // 提交成功回到列表页
+          this.props.history.replace('/product')
+        } else {
+          message.error(result.msg)
+        }
       }
     })
   }
@@ -157,7 +179,7 @@ class ProductAddUpdate extends Component {
             <PicturesWall ref={ this.pwRef } imgs={ product.imgs } />
           </Item>
           <Item label="商品详情" wrapperCol= {{ span: 20 }}>
-            <RichTextEditor detail={ product.detail } />
+            <RichTextEditor detail={ product.detail } ref={ this.editorRef } />
           </Item>
           <Item>
             <Button type="primary" htmlType="submit">提交</Button>

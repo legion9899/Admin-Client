@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
+import { EditorState, convertToRaw, ContentState } from 'draft-js'
 import draftToHtml from 'draftjs-to-html';
-import htmlToDraft from 'html-to-draftjs';
+import htmlToDraft from 'html-to-draftjs'
 import PropTypes from 'prop-types'
-import _ from 'lodash'
+// import _ from 'lodash' // 不建议在详情页加入函数防抖，太卡了
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import './rich-text-editor.less'
 
@@ -18,14 +18,12 @@ export default class RichTextEditor extends Component {
   }
 
   // 使用函数防抖优化编辑器处理改变回调函数
-  onEditorStateChange = _.debounce((editorState) => {
+  onEditorStateChange = (editorState) => {
     console.log('----')
     this.setState({
       editorState,
     });
-  }, 500);
-
-  getDetail = () => draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
+  };
 
   uploadImageCallBack = (file) => {
     return new Promise(
@@ -50,6 +48,8 @@ export default class RichTextEditor extends Component {
       }
     );
   }
+
+  getDetail = () => draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
 
   componentWillMount() {
     const detail = this.props.detail
@@ -76,6 +76,11 @@ export default class RichTextEditor extends Component {
           editorClassName="rich-text-content"
           onEditorStateChange={this.onEditorStateChange}
           toolbar={{
+            inline: { inDropdown: true },
+            list: { inDropdown: true },
+            textAlign: { inDropdown: true },
+            link: { inDropdown: true },
+            history: { inDropdown: true },
             image: { uploadCallback: this.uploadImageCallBack, alt: { present: true, mandatory: true } },
           }}
         />
