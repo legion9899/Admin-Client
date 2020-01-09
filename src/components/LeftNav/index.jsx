@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { Menu, Icon } from 'antd'
 import menuList from '../../config/menuConfig'
+import memoryUtils from '../../utils/memoryUtils'
 import logo from '../../assets/images/logo.png'
 import './index.less'
 
@@ -11,6 +12,30 @@ const { SubMenu } = Menu
  * 左侧导航组件
  */
 class LeftNav extends Component {
+  /*
+    先判断用户有没有对应的 item 权限，再往进添加
+  */
+  hasAuth = (item) => {
+    // 先得到当前用户的所有权限
+    const user = memoryUtils.user
+    const menus = user.role.menus
+    
+    // 1. 如果当前用户是 admin
+
+    // 2. 如果 item 是公开的
+
+    // 3. 当前用户有此 item 权限
+
+    if (user.username === 'admin' || item.public || menus.indexOf(item.key) !== -1) {
+      return true
+    } else if (item.children) {
+      // 如果当前用户有 item 的某个子节点的权限，当前 item 也应该显示
+      const cItem = item.children.find(cItem => menus.indexOf(cItem.key) !== -1)
+      return !!cItem // 如果 cItem 有值，返回 true
+    }
+    return false
+  }
+
   // 根据指定 menu 数据数组生成 <Menu.Item> 和 <SubMenu> 的数组
   // reduce + 函数递归
   getMenuNodes2 = (menuList) => {
@@ -26,47 +51,52 @@ class LeftNav extends Component {
     const path = this.props.location.pathname
 
     return menuList.reduce((pre, item) => {
-      // 可能向 pre 中添加 <Menu.Item>
-      if (!item.children) {
-        pre.push(
-          <Menu.Item key={ item.key }>
-            <Link to={ item.key }>
-              <Icon type={ item.icon } />
-              <span>{ item.title }</span>
-            </Link>
-          </Menu.Item>
-        )
-      } else {
-
-        /*
-          判断当前 item 的 key 是否是我需要的 openKey
-            + 查找 item 中的所有 children 中的 cItem 的 key
-            + 看是否有一个跟请求的 path 匹配
-        */
-
-        const cItem = item.children.find(cItem => path.indexOf(cItem.key) === 0)
-
-        if (cItem) {
-          // debugger
-          this.openKey = item.key
-        }
-
-        // 也可能向 pre 中添加 <SubMenu>
-        pre.push(
-          <SubMenu
-            key={ item.key }
-            title={
-              <span>
+      // 先判断用户有没有对应的 item 权限，再往进添加
+      if (this.hasAuth(item)) {
+        // 可能向 pre 中添加 <Menu.Item>
+        if (!item.children) {
+          pre.push(
+            <Menu.Item key={ item.key }>
+              <Link to={ item.key }>
                 <Icon type={ item.icon } />
                 <span>{ item.title }</span>
-              </span>
-            }
-          >
-            {/* 递归遍历 */}
-            { this.getMenuNodes2(item.children) }
-          </SubMenu>
-        )
+              </Link>
+            </Menu.Item>
+          )
+        } else {
+
+          /*
+            判断当前 item 的 key 是否是我需要的 openKey
+              + 查找 item 中的所有 children 中的 cItem 的 key
+              + 看是否有一个跟请求的 path 匹配
+          */
+
+          const cItem = item.children.find(cItem => path.indexOf(cItem.key) === 0)
+
+          if (cItem) {
+            // debugger
+            this.openKey = item.key
+          }
+
+          // 也可能向 pre 中添加 <SubMenu>
+          pre.push(
+            <SubMenu
+              key={ item.key }
+              title={
+                <span>
+                  <Icon type={ item.icon } />
+                  <span>{ item.title }</span>
+                </span>
+              }
+            >
+              {/* 递归遍历 */}
+              { this.getMenuNodes2(item.children) }
+            </SubMenu>
+          )
+        }
       }
+
+      
       return pre
     }, [])
   }

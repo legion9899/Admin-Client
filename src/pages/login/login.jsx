@@ -61,8 +61,8 @@ class Login extends Component {
       callback('密码不能为空')
     } else if (value.length < 4) {
       callback('密码不能小于 4 位')
-    } else if (value.length > 12) {
-      callback('密码不能大于 12 位')
+    } else if (value.length > 14) {
+      callback('密码不能大于 14 位')
     } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
       callback('密码必须是英文、数字或下划线组成')
     } else {
@@ -104,7 +104,7 @@ class Login extends Component {
                 rules: [ // 声明式验证：使用插件已定义好的规则进行验证
                   { required: true, whitespace: true, message: '请输入你的用户名' },
                   { min: 4, message: '用户名不能小于 4 位' },
-                  { max: 12, message: '用户名不能大于 12 位' },
+                  { max: 14, message: '用户名不能大于 14 位' },
                   { pattern: /^[a-zA-Z0-9_]+$/, message: '用户名必须是英文、数字或下划线组成' }
                 ],
               })(

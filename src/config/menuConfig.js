@@ -3,6 +3,7 @@ const menuList = [
     title: '首页', // 菜单标题名称
     key: '/home', // 对应的 path
     icon: 'home', // 图标名称
+    public: true, // 公开的功能
   },
   {
     title: '商品',

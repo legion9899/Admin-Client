@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Redirect } from 'react-router-dom'
 import { Card, Icon, List } from 'antd'
 import LinkButton from '../../components/LinkButton'
 import memoryUtils from '../../utils/memoryUtils'
@@ -14,7 +13,8 @@ const Item = List.Item
 */
 export default class ProductDetail extends Component {
   state = {
-    categoryName: ''
+    categoryName: '',
+    product: memoryUtils.product, // 商品信息
   }
   getCategory = async (categoryId) => {
     const result = await reqCategory(categoryId)
@@ -32,14 +32,42 @@ export default class ProductDetail extends Component {
       // 而是去传分类 id
       this.getCategory(product.categoryId)
     }
+
+    // 如果当前 product 转台没有数据，根据 id 参数中请求获取商品并更新
+    if (!this.state.product._id) {
+      setTimeout(() => {
+        const id = this.props.match.params.id
+
+        const product = {
+          "status": 1,
+          "imgs": [
+              "image-1559402396338.jpg"
+          ],
+          "_id": id,
+          "name": "联想ThinkPad 翼" + id,
+          "desc": "年度重量级新品，X390、T490全新登场 更加轻薄机身设计9",
+          "price": 65999,
+          "categoryId": "5ca9db9fb49ef916541160cc",
+          "detail": "<p><span style=\"color: rgb(228,57,60);background-color: rgb(255,255,255);font-size: 12px;\">想你所需，超你所想！精致外观，轻薄便携带光驱，内置正版office杜绝盗版死机，全国联保两年！</span> 222</p>\n<p><span style=\"color: rgb(102,102,102);background-color: rgb(255,255,255);font-size: 16px;\">联想（Lenovo）扬天V110 15.6英寸家用轻薄便携商务办公手提笔记本电脑 定制【E2-9010/4G/128G固态】 2G独显 内置</span></p>\n<p><span style=\"color: rgb(102,102,102);background-color: rgb(255,255,255);font-size: 16px;\">99999</span></p>\n",
+          "__v": 0
+        }
+
+        // this.getCategory(product.categoryId)
+
+        this.setState({
+          product
+        })
+      }, 1000)
+    }
   }
   render() {
     const { categoryName } = this.state
-    const product = memoryUtils.product
+    const product = this.state.product
+    // const product = memoryUtils.product || {}
     // debugger
-    if (!product || !product._id) {
-      return <Redirect to="/product"/>
-    }
+    // if (!product || !product._id) {
+    //   return <Redirect to="/product"/>
+    // }
     const title = (
       <span>
         <LinkButton onClick={() => this.props.history.goBack() }>
@@ -72,7 +100,7 @@ export default class ProductDetail extends Component {
           <Item>
             <span className="detail-left">商品图片：</span>
             <span>
-              { product.imgs.map(img => <img className="detail-image" key={ img } src={ BASE_IMG + img } alt="img" />) }
+              { product.imgs && product.imgs.map(img => <img className="detail-image" key={ img } src={ BASE_IMG + img } alt="img" />) }
             </span>
           </Item>
           <Item>

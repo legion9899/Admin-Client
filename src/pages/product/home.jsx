@@ -75,7 +75,7 @@ export default class ProductHome extends Component {
               onClick={() => {
                 // 跳转前在内存中保存 product，为了给详情页展示对应数据使用
                 memoryUtils.product = product
-                this.props.history.push('/product/detail')
+                this.props.history.push('/product/detail/' + product._id)
               }
             }>
               详情
